@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>智能购物意见助手 | 专业选款·避坑·推荐</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4361ee',
+            secondary: '#3b82f6',
+            dark: '#0f172a',
+            light: '#f8fafc',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .gradient-bg {
+        background: linear-gradient(135deg, #4361ee 0%, #3b82f6 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      }
+      .input-glow:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+  <!-- 顶部导航 -->
+  <header class="gradient-bg text-white shadow-lg">
+    <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <i class="fa fa-shopping-bag text-2xl"></i>
+        <h1 class="text-[clamp(1.25rem,3vw,2rem)] font-bold">智能购物意见助手</h1>
+      </div>
+      <p class="hidden md:block text-sm opacity-90">专业·中立·免费·高效</p>
+    </div>
+  </header>
+
+  <!-- 主要内容 -->
+  <main class="container mx-auto px-4 py-10">
+    <section class="text-center mb-12">
+      <h2 class="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark mb-3">
+        一站式购物决策服务平台
+      </h2>
+      <p class="text-slate-600 max-w-2xl mx-auto">
+        选品困难？比价麻烦？怕踩坑？输入你的需求，立刻获得专业购物建议，买对不买贵！
+      </p>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <!-- 购物咨询 -->
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white">
+            <i class="fa fa-comments"></i>
+          </div>
+          <h3 class="text-xl font-bold">快速购物咨询</h3>
+        </div>
+        <div class="space-y-4">
+          <input type="text" id="product" placeholder="你想买什么？（如：手机、耳机、行李箱）"
+            class="w-full px-4 py-3 rounded-lg border border-slate-300 input-glow outline-none"/>
+          <input type="text" id="budget" placeholder="你的预算（如：1000-2000元）"
+            class="w-full px-4 py-3 rounded-lg border border-slate-300 input-glow outline-none"/>
+          <textarea id="demand" rows="2" placeholder="额外需求：用途、品牌、偏好等"
+            class="w-full px-4 py-3 rounded-lg border border-slate-300 input-glow outline-none"></textarea>
+          <button onclick="getAdvice()" class="w-full gradient-bg text-white py-3 rounded-lg font-medium hover:opacity-90 transition">
+            获取专业购物意见
+          </button>
+          <div id="adviceBox" class="hidden bg-blue-50 p-4 rounded-lg text-sm mt-4 border-l-4 border-primary">
+            <p class="font-medium mb-1">购物建议：</p>
+            <p id="adviceText"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 场景推荐 -->
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white">
+            <i class="fa fa-th-list"></i>
+          </div>
+          <h3 class="text-xl font-bold">场景化推荐</h3>
+        </div>
+        <div class="space-y-4">
+          <select id="sceneSelect" class="w-full px-4 py-3 rounded-lg border border-slate-300 input-glow outline-none">
+            <option>学生开学必备</option>
+            <option>租房好物清单</option>
+            <option>送礼精选推荐</option>
+            <option>健身运动装备</option>
+            <option>办公数码好物</option>
+          </select>
+          <button onclick="showScene()" class="w-full gradient-bg text-white py-3 rounded-lg font-medium hover:opacity-90 transition">
+            查看推荐清单
+          </button>
+          <div id="sceneBox" class="hidden bg-blue-50 p-4 rounded-lg text-sm mt-4 border-l-4 border-primary">
+            <p id="sceneText"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- 商品对比 -->
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white">
+            <i class="fa fa-balance-scale"></i>
+          </div>
+          <h3 class="text-xl font-bold">商品对比</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <input placeholder="商品A名称" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow">
+            <input placeholder="价格" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow mt-2">
+            <input placeholder="优点" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow mt-2">
+            <input placeholder="缺点" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow mt-2">
+          </div>
+          <div>
+            <input placeholder="商品B名称" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow">
+            <input placeholder="价格" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow mt-2">
+            <input placeholder="优点" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow mt-2">
+            <input placeholder="缺点" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 input-glow mt-2">
+          </div>
+        </div>
+        <button onclick="compareProducts()" class="w-full gradient-bg text-white py-3 rounded-lg font-medium hover:opacity-90 transition">
+          生成对比结论
+        </button>
+        <div id="compareBox" class="hidden bg-blue-50 p-4 rounded-lg text-sm mt-4 border-l-4 border-primary">
+          <p id="compareText"></p>
+        </div>
+      </div>
+
+      <!-- 避坑指南 -->
+      <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white">
+            <i class="fa fa-exclamation-triangle"></i>
+          </div>
+          <h3 class="text-xl font-bold">购物避坑指南</h3>
+        </div>
+        <ul class="space-y-2 text-sm text-slate-700">
+          <li class="flex items-start gap-2">
+            <i class="fa fa-check-circle text-primary mt-1"></i>
+            <span>远离“超低价清仓”“限时秒杀”等过度营销商品</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fa fa-check-circle text-primary mt-1"></i>
+            <span>刷单、刷好评店铺优先避开，多看带图/追评</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fa fa-check-circle text-primary mt-1"></i>
+            <span>电器数码优先官方旗舰店，避免翻新/二手充新</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fa fa-check-circle text-primary mt-1"></i>
+            <span>不私下转账、不脱离平台交易，防止诈骗</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fa fa-check-circle text-primary mt-1"></i>
+            <span>大额商品优先选择支持7天无理由+运费险店铺</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部 -->
+  <footer class="bg-dark text-white text-center py-6 mt-12">
+    <p>智能购物意见助手 © 2026 | 中立专业 · 免费实用 · 项目演示版</p>
+  </footer>
+
+  <script>
+    // 购物建议
+    function getAdvice() {
+      const p = document.getElementById('product').value || '未填写';
+      const b = document.getElementById('budget').value || '未填写';
+      const d = document.getElementById('demand').value || '无';
+      const t = `
+• 商品类型：${p}
+• 预算范围：${b}
+• 额外需求：${d}
+
+建议优先选择评分4.8以上、销量靠前的品牌；
+同价位优先看真实口碑与售后保障；
+不盲目追新款，优先满足自身使用需求；
+大额商品可等待大促期间购买更划算。
+      `;
+      document.getElementById('adviceText').innerText = t;
+      document.getElementById('adviceBox').classList.remove('hidden');
+    }
+
+    // 场景推荐
+    function showScene() {
+      const s = document.getElementById('sceneSelect').value;
+      let list = '';
+      if (s.includes('学生')) list = '笔记本、台灯、充电宝、书包、雨伞、水杯、收纳盒';
+      else if (s.includes('租房')) list = '锅具套装、收纳箱、床垫、拖把、小冰箱、晾衣架、垃圾桶';
+      else if (s.includes('送礼')) list = '保温杯、围巾、礼盒、香薰、书籍、零食礼盒、护手霜';
+      else if (s.includes('健身')) list = '瑜伽垫、运动鞋、护腕、跳绳、拉力器、运动水杯、毛巾';
+      else list = '无线鼠标、键盘、笔记本支架、U盘、笔筒、便签纸、数据线';
+
+      document.getElementById('sceneText').innerText = `${s}：${list}`;
+      document.getElementById('sceneBox').classList.remove('hidden');
+    }
+
+    // 商品对比
+    function compareProducts() {
+      const txt = '优先选择：性价比更高、售后更完善、评价更真实的商品；\n功能相近选便宜耐用款，长期使用选质量更好的。';
+      document.getElementById('compareText').innerText = txt;
+      document.getElementById('compareBox').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
